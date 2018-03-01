@@ -1,0 +1,267 @@
+#TMSH-VERSION: 12.1.3
+
+cli admin-partitions {
+    update-partition Common
+}
+sys application template base_ltm_profiles_v12.1.3 {
+    actions {
+        definition {
+            html-help {
+            }
+            implementation {
+puts "Starting iApp $tmsh::app_name.app deployment"
+
+set cfg {
+
+ltm profile tcp TCP-Default-v12-1 {
+    abc enabled
+    ack-on-push enabled
+    close-wait-timeout 5
+    cmetrics-cache enabled
+    cmetrics-cache-timeout 0
+    congestion-control high-speed
+    defaults-from /Common/tcp
+    deferred-accept disabled
+    delay-window-control disabled
+    delayed-acks enabled
+    dsack disabled
+    early-retransmit disabled
+    ecn disabled
+    fast-open disabled
+    fast-open-cookie-expiration 21600
+    fin-wait-2-timeout 300
+    fin-wait-timeout 5
+    idle-timeout 300
+    init-cwnd 0
+    init-rwnd 0
+    ip-tos-to-client 0
+    keep-alive-interval 1800
+    limited-transmit enabled
+    link-qos-to-client 0
+    max-retrans 8
+    max-segment-size 1460
+    md5-signature disabled
+    md5-signature-passphrase none
+    minimum-rto 0
+    mptcp disabled
+    mptcp-csum disabled
+    mptcp-csum-verify disabled
+    mptcp-fallback reset
+    mptcp-fastjoin disabled
+    mptcp-idle-timeout 300
+    mptcp-join-max 5
+    mptcp-makeafterbreak disabled
+    mptcp-nojoindssack disabled
+    mptcp-rtomax 5
+    mptcp-rxmitmin 1000
+    mptcp-subflowmax 6
+    mptcp-timeout 3600
+    nagle disabled
+    pkt-loss-ignore-burst 0
+    pkt-loss-ignore-rate 0
+    proxy-buffer-high 49152
+    proxy-buffer-low 32768
+    proxy-mss enabled
+    proxy-options enabled
+    rate-pace disabled
+    rate-pace-max-rate 0
+    receive-window-size 65535
+    reset-on-timeout enabled
+    rexmt-thresh 3
+    selective-acks enabled
+    selective-nack disabled
+    send-buffer-size 65535
+    slow-start enabled
+    syn-cookie-whitelist disabled
+    syn-max-retrans 3
+    syn-rto-base 0
+    tail-loss-probe disabled
+    time-wait-recycle enabled
+    time-wait-timeout 2000
+    timestamps enabled
+    verified-accept disabled
+    zero-window-timeout 20000
+}
+ltm profile http HTTP-Default-v12-1 {
+    accept-xff disabled
+    basic-auth-realm none
+    defaults-from /Common/http
+    encrypt-cookies none
+    enforcement {
+        known-methods { CONNECT DELETE GET HEAD LOCK OPTIONS POST PROPFIND PUT TRACE UNLOCK }
+        max-header-count 64
+        max-header-size 32768
+        max-requests 0
+        pipeline allow
+        truncated-redirects disabled
+        unknown-method allow
+    }
+    fallback-host none
+    fallback-status-codes none
+    header-erase none
+    header-insert none
+    hsts {
+        include-subdomains enabled
+        maximum-age 16070400
+        mode disabled
+    }
+    insert-xforwarded-for disabled
+    lws-separator none
+    lws-width 80
+    oneconnect-transformations enabled
+    proxy-type reverse
+    redirect-rewrite none
+    request-chunking preserve
+    response-chunking selective
+    response-headers-permitted none
+    server-agent-name BigIP
+    sflow {
+        poll-interval 0
+        sampling-rate 0
+    }
+    via-request preserve
+    via-response preserve
+    xff-alternative-names none
+}
+ltm profile client-ssl CLIENTSSL-Default-v12-1 {
+    alert-timeout indefinite
+    allow-dynamic-record-sizing disabled
+    allow-expired-crl disabled
+    allow-non-ssl disabled
+    authenticate once
+    authenticate-depth 9
+    ca-file none
+    cache-size 262144
+    cache-timeout 3600
+    cert default.crt
+    cert-extension-includes { basic-constraints subject-alternative-name }
+    cert-key-chain {
+        default {
+            cert default.crt
+            key default.key
+        }
+    }
+    cert-lifespan 30
+    cert-lookup-by-ipaddr-port disabled
+    chain none
+    ciphers DEFAULT
+    client-cert-ca none
+    crl-file none
+    defaults-from /Common/clientssl
+    generic-alert enabled
+    handshake-timeout 10
+    inherit-certkeychain false
+    key default.key
+    max-active-handshakes indefinite
+    max-aggregate-renegotiation-per-minute indefinite
+    max-renegotiations-per-minute 5
+    maximum-record-size 16384
+    mod-ssl-methods disabled
+    mode enabled
+    options { dont-insert-empty-fragments }
+    passphrase none
+    peer-cert-mode ignore
+    peer-no-renegotiate-timeout 10
+    proxy-ca-cert none
+    proxy-ca-key none
+    proxy-ssl disabled
+    proxy-ssl-passthrough disabled
+    renegotiate-max-record-delay indefinite
+    renegotiate-period indefinite
+    renegotiate-size indefinite
+    renegotiation enabled
+    retain-certificate true
+    secure-renegotiation require
+    server-name none
+    session-mirroring disabled
+    session-ticket disabled
+    session-ticket-timeout 0
+    sni-default false
+    sni-require false
+    ssl-forward-proxy disabled
+    ssl-forward-proxy-bypass disabled
+    ssl-sign-hash any
+    strict-resume disabled
+    unclean-shutdown enabled
+}
+ltm profile server-ssl SERVERSSL-Default-v12-1 {
+    alert-timeout indefinite
+    allow-expired-crl disabled
+    authenticate once
+    authenticate-depth 9
+    authenticate-name none
+    ca-file none
+    cache-size 262144
+    cache-timeout 3600
+    cert none
+    chain none
+    ciphers DEFAULT
+    crl-file none
+    defaults-from /Common/serverssl
+    expire-cert-response-control drop
+    generic-alert enabled
+    handshake-timeout 10
+    key none
+    max-active-handshakes indefinite
+    mod-ssl-methods disabled
+    mode enabled
+    options { dont-insert-empty-fragments }
+    peer-cert-mode ignore
+    proxy-ssl disabled
+    proxy-ssl-passthrough disabled
+    renegotiate-period indefinite
+    renegotiate-size indefinite
+    renegotiation enabled
+    retain-certificate true
+    secure-renegotiation require-strict
+    server-name none
+    session-mirroring disabled
+    session-ticket disabled
+    sni-default false
+    sni-require false
+    ssl-forward-proxy disabled
+    ssl-forward-proxy-bypass disabled
+    ssl-sign-hash any
+    strict-resume disabled
+    unclean-shutdown enabled
+    untrusted-cert-response-control drop
+}
+}
+
+set fileId [open /var/tmp/base_ltm_profiles_v12.1.3.cfg "w"]
+puts -nonewline $fileId $cfg
+close $fileId
+
+tmsh::load sys config merge file /var/tmp/base_ltm_profiles_v12.1.3.cfg
+
+puts "Finished iApp $tmsh::app_name.app deployment"
+            }
+            macro {
+            }
+            presentation {
+include "/Common/f5.apl_common"
+section dummy {
+    string iworkflow1 default "blah" display "xxlarge"
+    string iworkflow2 default "blah" display "xxlarge"
+}
+text {
+    dummy "General variables"
+    dummy.iworkflow1 "Dummy variable 1 for iWorkflow"
+    dummy.iworkflow2 "Dummy variable 2 for iWorkflow"
+}
+            }
+            role-acl { admin manager resource-admin }
+            run-as none
+        }
+    }
+    description "Base LTM profiles to support version stability across upgrades"
+    ignore-verification false
+    requires-bigip-version-max none
+    requires-bigip-version-min 12.1.0
+    requires-modules { ltm }
+    signing-key none
+    tmpl-checksum none
+    tmpl-signature none
+}
+
+# EOF
